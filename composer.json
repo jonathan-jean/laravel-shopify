@@ -27,8 +27,8 @@
         "php": "^8.0 || 8.1",
         "ext-json": "*",
         "funeralzone/valueobjects": "^0.5",
-        "jenssegers/agent": "^2.6",
         "laravel/framework": "^8.0 || ^9.0 || ^10.0 || ^11.0",
+        "hisorange/browser-detect": "^5.0",
         "gnikyt/basic-shopify-api": "^9.0 || ^10.0 || ^11.0"
     },
     "require-dev": {

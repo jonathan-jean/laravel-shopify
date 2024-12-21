@@ -3,7 +3,7 @@
 namespace Osiset\ShopifyApp\Services;
 
 use Illuminate\Support\Facades\Config;
-use Jenssegers\Agent\Agent;
+use Browser;
 
 /**
  * Helper for dealing with cookie and cookie issues.
@@ -15,7 +15,6 @@ class CookieHelper
      *
      * @var [type]
      */
-    protected $agent;
 
     /**
      * Constructor.
@@ -24,7 +23,6 @@ class CookieHelper
      */
     public function __construct()
     {
-        $this->agent = new Agent();
     }
 
     /**
@@ -67,21 +65,21 @@ class CookieHelper
         $browser = $this->getBrowserDetails();
         $platform = $this->getPlatformDetails();
 
-        if ($browser['major'] >= 67 && $this->agent->is('Chrome')) {
+        if (Browser::browserVersionMajor() >= 67 && Browser::isChrome()) {
             $compatible = true;
         }
 
-        if ($platform['major'] > 12 && $this->agent->is('iOS')) {
+        if (Browser::platformVersionMajor() > 12 && Browser::isMac()) {
             $compatible = true;
         }
 
-        if ($platform['float'] > 10.14 &&
-            $this->agent->is('OS X') && $this->agent->is('Safari') && ! $this->agent->is('iOS')
+        if (Browser::platformVersionMajor() > 10 &&
+            Browser::isMac() && Browser::isSafari() && ! Browser::isIOS()
         ) {
             $compatible = true;
         }
 
-        if ($browser['float'] > 12.13 && $this->agent->is('UCBrowser')) {
+        if (Browser::browserVersionMajor() > 12 && Browser::isUCBrowser()) {
             $compatible = true;
         }
 
@@ -95,7 +93,7 @@ class CookieHelper
      */
     public function getBrowserDetails(): array
     {
-        return $this->version($this->agent->browser());
+        return $this->version(Browser::browserVersion());
     }
 
     /**
@@ -105,7 +103,7 @@ class CookieHelper
      */
     public function getPlatformDetails(): array
     {
-        return $this->version($this->agent->platform());
+        return $this->version(Browser::platformVersion());
     }
 
     /**
@@ -115,9 +113,8 @@ class CookieHelper
      *
      * @return array
      */
-    protected function version(string $source): array
+    protected function version(string $version): array
     {
-        $version = $this->agent->version($source);
         $pieces = explode('.', str_replace('_', '.', $version));
 
         return [
